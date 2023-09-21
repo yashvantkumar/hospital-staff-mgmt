@@ -38,5 +38,18 @@ URI: /api/v1/staff/ <br />
 Method: DELETE <br />
 &nbsp; &nbsp; * emailId <br />
 
+## Used technologies:
+&nbsp; &nbsp; * Node.js <br />
+&nbsp; &nbsp; * Express <br />
+&nbsp; &nbsp; * MongoDB <br />
 
+## How to run:
+&nbsp; &nbsp; 1. npm install <br />
+&nbsp; &nbsp; 2. npm run dev <br /><br />
 
+## Environment variables required
+`PORT=""
+API_VERSION=""
+NODE_ENV=""
+SECRET_TOKEN=""
+MONGODB_URI=""`
