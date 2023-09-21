@@ -7,6 +7,19 @@ const permissionRoute = require("./module/permission/permissionRoute");
 const roleRoute = require("./module/role/roleRoute");
 const staffRoute = require("./module/staff/staffRoute");
 
+apiRouter.use((req, res, next) => {
+    const { x_api_key = "" } = req.headers;
+    // Based on the oAuth or user name and password security can be added
+    if (process.env.SECRET_TOKEN === x_api_key || req.path.includes("health-check")) {
+        return next();
+    }
+
+    return res.status(httpStatusCode.UNAUTHORIZED).send({
+        success: false,
+        message: "Unauthorized",
+    })
+});
+
 const apiRoutes = () => {
     return apiRouter
         .use("/permission", permissionRoute())
