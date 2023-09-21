@@ -14,6 +14,7 @@ const schema = Joi.object({
         .required(),
     permissions: Joi.array()
         .min(1)
+        .items(Joi.string().valid("CREATE", "UPDATE", "READ", "DELETE"))
         .required(),
 });
 
