@@ -24,7 +24,7 @@ const createStaffSchema = Joi.object({
         .required()
 });
 
-const getStaffSchema = Joi.object({
+const emailIdSchema = Joi.object({
     emailId: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'in', 'co', 'net'] } })
         .required()
@@ -32,5 +32,5 @@ const getStaffSchema = Joi.object({
 
 module.exports = {
     createStaffSchema,
-    getStaffSchema,
+    emailIdSchema,
 };

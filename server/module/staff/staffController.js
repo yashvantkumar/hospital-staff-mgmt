@@ -10,36 +10,39 @@ const logger = require("../../config/logger")("staffController");
 const getStaff = async (req, res) => {
     try {
         logger.info({ method: "getRole" }, "entering getRole", req.query);
-        const { name = "" } = req.query;
+        const { emailId = "" } = req.query;
 
-        const [role] = await StaffSchema.aggregate([
+        const [staff] = await StaffSchema.aggregate([
             {
                 $match: {
-                    formattedName: snakeCase(name)
+                    emailId
                 }
             }, {
                 $lookup: {
-                    from: 'permissions',
-                    localField: 'permissionId',
-                    foreignField: 'id',
-                    as: 'permissions'
+                    from: 'roles',
+                    localField: 'roleId',
+                    foreignField: 'rlId',
+                    as: 'roles'
                 }
             }
-        ]);
+        ]) || {};
 
-        if (!role) {
+        if (!staff) {
             return res.status(httpStatusCode.BAD_REQUEST).send({
                 success: false,
-                message: `Role ${name} does not exist`
+                message: `Staff ${name} does not exist`
             });
         }
 
         return res.status(httpStatusCode.OK).send({
             success: true,
-            name: role?.name,
-            description: role?.description,
-            permissions: role?.permissions.map((eachPermission) => eachPermission.name),
+            name: staff?.name,
+            emailId: staff?.emailId,
+            age: staff?.age,
+            gender: staff?.gender,
+            roles: staff?.roles.map((eachRole) => eachRole.name),
         });
+
     } catch (error) {
         logger.error({ method: "getRole" }, "something went wrong", req.params, error);
         return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({
@@ -83,7 +86,6 @@ const createStaff = async (req, res) => {
                 message: `${role} does not exist, please provide the valid role`,
             })
         }
-        console.log("staff", req.body, roleId);
 
         const payload = {
             staffId: id,
@@ -110,7 +112,34 @@ const createStaff = async (req, res) => {
     }
 };
 
+const deleteStaff = async (req, res) => {
+    try {
+        logger.info({ method: "deleteStaff" }, "entering deleteStaff", req.body);
+
+        const { emailId = "" } = req.body;
+        const updateStaffStatus = await StaffSchema.updateOne({
+            emailId
+        }, {
+            $set: {
+                status: "LEFT",
+            }
+        });
+
+        return res.status(httpStatusCode.OK).send({
+            message: "Staff status updated successfully",
+            success: true
+        });
+    } catch (error) {
+        logger.error({ method: "deleteStaff" }, "something went wrong", req.body, error);
+        return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: "Something went wrong, please reach out abc@abc.com"
+        });
+    }
+};
+
 module.exports = {
     getStaff,
     createStaff,
+    deleteStaff,
 };

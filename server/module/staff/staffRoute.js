@@ -4,7 +4,8 @@ const staffController = require("./staffController");
 
 const {
     validateCreateStaff,
-    validateGetStaff
+    validateGetStaff,
+    validateDeleteStaff,
 } = require("./staffMiddleware");
 
 module.exports = () => {
@@ -13,6 +14,7 @@ module.exports = () => {
     router.route("/")
         .get(validateGetStaff, staffController.getStaff)
         .put(validateCreateStaff, staffController.createStaff)
+        .delete(validateDeleteStaff, staffController.deleteStaff)
 
     return router;
 };
