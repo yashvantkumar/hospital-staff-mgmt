@@ -7,8 +7,8 @@ describe("staff details", () => {
         const response = await request(baseURL).post(`/api/v1/staff`).send({
             staffId: "123",
         });
-        expect(response.statusCode).toBe(200);
-        expect(response.body.data.success).toBe(true);
+        expect(response.status).toBe(200);
+        expect(response.data.success).toBe(true);
     });
     it("should create an item", async () => {
         const response = await request(baseURL).put(`/api/v1/staff`).send({
