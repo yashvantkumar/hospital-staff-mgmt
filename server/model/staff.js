@@ -12,6 +12,8 @@ const StaffSchema = new Schema({
     status: { type: String, enum: ["ACTIVE", "LEFT"] },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
+}, {
+    timestamps: true,
 });
 
 const Staff = mongoose.model('staff', StaffSchema);

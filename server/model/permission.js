@@ -12,6 +12,8 @@ const PermissionSchema = new Schema({
     description: { type: String, required: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
+}, {
+    timestamps: true,
 });
 
 const Permission = mongoose.model('permissions', PermissionSchema);

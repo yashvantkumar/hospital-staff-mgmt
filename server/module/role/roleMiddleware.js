@@ -1,11 +1,11 @@
 const httpStatusCode = require("http-status-codes");
 
-const logger = require("../../config/logger")("permissionMiddleware");
+const logger = require("../../config/logger")("roleMiddleware");
 
 const {
-    createPermissionSchema,
-    getPermissionSchema
-} = require("./permissionJoiSchema");
+    createRoleSchema,
+    getRoleSchema
+} = require("./roleJoiSchema");
 
 const validateUserRequest = ({
     joiSchema,
@@ -32,19 +32,19 @@ const validateUserRequest = ({
     }
 };
 
-const validateGetPermission = (req, res, next) => validateUserRequest({
-    joiSchema: getPermissionSchema,
+const validateGetRole = (req, res, next) => validateUserRequest({
+    joiSchema: getRoleSchema,
     payload: req.query,
-    validationType: "validateGetPermission",
+    validationType: "validateGetRole",
 }, req, res, next);
 
-const validateCreatePermission = (req, res, next) => validateUserRequest({
-    joiSchema: createPermissionSchema,
+const validateCreateRole = (req, res, next) => validateUserRequest({
+    joiSchema: createRoleSchema,
     payload: req.body,
-    validationType: "validateCreatePermission",
+    validationType: "validateCreateRole",
 }, req, res, next);
 
 module.exports = {
-    validateCreatePermission,
-    validateGetPermission,
+    validateCreateRole,
+    validateGetRole,
 };
