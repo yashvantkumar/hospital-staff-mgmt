@@ -1,5 +1,5 @@
 const httpStatusCode = require("http-status-codes");
-const { snakeCase, random, upperCase } = require("lodash");
+const { snakeCase, random, upperCase, omitBy, isNil, isEqual, intersectionWith } = require("lodash");
 const moment = require("moment");
 
 const { Role: RoleSchema } = require("../../model/role");
@@ -138,8 +138,65 @@ const deleteStaff = async (req, res) => {
     }
 };
 
+const updateStaff = async (req, res) => {
+    try {
+        logger.info({ method: "updateStaff" }, "entering updateStaff", req.body);
+        const {
+            staffId,
+            emailId,
+            role,
+            department,
+            name,
+            status,
+        } = req.body;
+
+        const updatableFields = ["age", "department", "name", "emailId"];
+
+        const fields = {
+            emailId, role, name, department, status
+        };
+        const processedValue = omitBy(fields, isNil);
+
+        const updatedFields = intersectionWith(updatableFields, Object.keys(processedValue), isEqual);
+
+        const payload = {};
+        updatedFields.forEach(element => {
+            payload[element] = fields[element]
+        });
+
+        let roleId = null;
+
+        if (role) {
+            const roleDetails = await getRole({ formattedName: snakeCase(role) });
+            roleId = roleDetails?.rlId || null;
+        };
+
+        if (roleId) {
+            payload["roleId"] = roleId
+        };
+
+        const updateStaff = await StaffSchema.updateOne({
+            staffId,
+        }, {
+            $set: payload,
+        });
+
+        return res.status(httpStatusCode.OK).send({
+            message: `Staff details for ${staffId} updated successfully`,
+            success: true
+        });
+    } catch (error) {
+        logger.error({ method: "updateStaff" }, "something went wrong", req.body, error);
+        return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: "Something went wrong, please reach out abc@abc.com"
+        });
+    }
+};
+
 module.exports = {
     getStaff,
     createStaff,
     deleteStaff,
+    updateStaff,
 };

@@ -6,6 +6,7 @@ const {
     validateCreateStaff,
     validateGetStaff,
     validateDeleteStaff,
+    validateUpdateStaff,
 } = require("./staffMiddleware");
 
 module.exports = () => {
@@ -15,6 +16,7 @@ module.exports = () => {
         .get(validateGetStaff, staffController.getStaff)
         .put(validateCreateStaff, staffController.createStaff)
         .delete(validateDeleteStaff, staffController.deleteStaff)
+        .post(validateUpdateStaff, staffController.updateStaff)
 
     return router;
 };
