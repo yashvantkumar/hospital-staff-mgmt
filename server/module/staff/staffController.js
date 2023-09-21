@@ -1,18 +1,18 @@
 const httpStatusCode = require("http-status-codes");
-const { snakeCase, random } = require("lodash");
+const { snakeCase, random, upperCase } = require("lodash");
 const moment = require("moment");
 
 const { Role: RoleSchema } = require("../../model/role");
-const { Permission: PermissionSchema } = require("../../model/permission");
+const { Staff: StaffSchema } = require("../../model/staff");
 
-const logger = require("../../config/logger")("roleController");
+const logger = require("../../config/logger")("staffController");
 
-const getRole = async (req, res) => {
+const getStaff = async (req, res) => {
     try {
         logger.info({ method: "getRole" }, "entering getRole", req.query);
         const { name = "" } = req.query;
 
-        const [role] = await RoleSchema.aggregate([
+        const [role] = await StaffSchema.aggregate([
             {
                 $match: {
                     formattedName: snakeCase(name)
@@ -21,7 +21,7 @@ const getRole = async (req, res) => {
                 $lookup: {
                     from: 'permissions',
                     localField: 'permissionId',
-                    foreignField: 'permId',
+                    foreignField: 'id',
                     as: 'permissions'
                 }
             }
@@ -49,57 +49,60 @@ const getRole = async (req, res) => {
     }
 };
 
-const getPermission = async (payload) => {
+const getRole = async (payload) => {
     try {
-        const permission = await PermissionSchema.findOne(payload);
-        return permission;
+        const role = await RoleSchema.findOne(payload);
+        return role;
     } catch (error) {
-        logger.error({ method: "getPermission" }, "something went wrong", payload);
+        logger.error({ method: "getRole" }, "something went wrong", payload);
         return null;
     }
 }
 
-const createRole = async (req, res) => {
+const createStaff = async (req, res) => {
     try {
-        logger.info({ method: "createRole" }, "entering createRole", req.body);
+        logger.info({ method: "createStaff" }, "entering createStaff", req.body);
 
-        const id = `RL-${moment().format('YYMMDDHHmmss')}${random(1000, 9999)}`;
+        const id = `ST-${moment().format('YYMMDDHHmmss')}${random(1000, 9999)}`;
 
         const {
             name = "",
-            permission = "",
-            description = ""
+            emailId = "",
+            role = "",
+            age,
+            gender,
+            department = ""
         } = req?.body;
 
-        const formattedName = snakeCase(name);
+        const { rlId: roleId = "" } = await getRole({ formattedName: snakeCase(role) }) || {};
 
-        const { permId: permissionId = "" } = await getPermission({
-            formattedName: permission
-        }) || {};
-
-        if (!permissionId) {
-            logger.warn({ method: "createRole" }, `${permission} does not exist`);
+        if (!roleId) {
+            logger.warn({ method: "createStaff" }, `${role} does not exist`);
             return res.status(httpStatusCode.BAD_REQUEST).send({
                 success: false,
-                message: `${permission} permission does not exist`
-            });
-        };
+                message: `${role} does not exist, please provide the valid role`,
+            })
+        }
+        console.log("staff", req.body, roleId);
 
         const payload = {
-            rlId: id,
+            staffId: id,
             name,
-            formattedName,
-            permissionId,
-            description,
-            status: "ACTIVE",
+            emailId,
+            roleId,
+            age,
+            department,
+            gender: upperCase(gender),
+            status: "ACTIVE"
         };
-        const create = await RoleSchema.create(payload);
+
+        const create = await StaffSchema.create(payload);
         res.status(httpStatusCode.OK).send({
             success: true,
-            message: "Role created successfully",
+            message: "Staff created successfully",
         });
     } catch (error) {
-        logger.error({ method: "createRole" }, "something went wrong", req.body, error);
+        logger.error({ method: "createStaff" }, "something went wrong", req.body, error);
         return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({
             success: false,
             message: "Something went wrong, please reach out abc@abc.com"
@@ -108,6 +111,6 @@ const createRole = async (req, res) => {
 };
 
 module.exports = {
-    getRole,
-    createRole,
+    getStaff,
+    createStaff,
 };

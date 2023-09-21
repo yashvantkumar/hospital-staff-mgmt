@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const RoleSchema = new Schema({
-    id: { type: String, required: true, unique: true },
+    rlId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     status: { type: String, required: true, enum: ["ACTIVE", "LEFT"], require: true },
     formattedName: { type: String, required: true, unique: true },

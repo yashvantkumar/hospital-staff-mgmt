@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PermissionSchema = new Schema({
-    id: { type: String, required: true, unique: true },
+    permId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     formattedName: { type: String, required: true, unique: true },
     permissions: [{
