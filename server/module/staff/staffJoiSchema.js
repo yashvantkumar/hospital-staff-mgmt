@@ -24,13 +24,28 @@ const createStaffSchema = Joi.object({
         .required()
 });
 
-const getStaffSchema = Joi.object({
+const emailIdSchema = Joi.object({
     emailId: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'in', 'co', 'net'] } })
         .required()
 });
 
+const updateStaffSchema = Joi.object({
+    staffId: Joi.string()
+        .required(),
+    role: Joi.string()
+        .min(3)
+        .max(20),
+    gender: Joi.string()
+        .allow("MALE", "FEMALE", "OTHER"),
+    department: Joi.string(),
+    name: Joi.string(),
+    emailId: Joi.string()
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'in', 'co', 'net'] } })
+});
+
 module.exports = {
     createStaffSchema,
-    getStaffSchema,
+    emailIdSchema,
+    updateStaffSchema,
 };
