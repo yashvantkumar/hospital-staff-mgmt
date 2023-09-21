@@ -49,7 +49,7 @@ const createPermission = async (req, res) => {
         const formattedName = snakeCase(name);
 
         const payload = {
-            id,
+            permId: id,
             name,
             formattedName,
             permissions,
