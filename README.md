@@ -10,13 +10,33 @@ I created an online staff management system that will allow users can add, edit,
 
 ## Functionalities:
 
-**1. Add employee information:** <br />
+**1. Add staff information:** <br />
 URI: /api/v1/staff/
-Method: PUT
-
+Method: PUT <br />
 &nbsp; &nbsp; * name <br />
 &nbsp; &nbsp; * role <br />
 &nbsp; &nbsp; * age <br />
 &nbsp; &nbsp; * gender <br />
 &nbsp; &nbsp; * emailId <br />
 &nbsp; &nbsp; * department <br />
+
+**2. Get staff information:** <br />
+URI: /api/v1/staff/
+Method: GET <br />
+&nbsp; &nbsp; * emailId <br />
+
+**3. Update staff information:** <br />
+URI: /api/v1/staff/
+Method: POST <br />
+&nbsp; &nbsp; * emailId <br />
+&nbsp; &nbsp; * name <br />
+&nbsp; &nbsp; * age <br />
+&nbsp; &nbsp; * role <br />
+
+**3. Delete staff information:** <br />
+URI: /api/v1/staff/
+Method: DELETE <br />
+&nbsp; &nbsp; * staffId <br />
+
+
+
