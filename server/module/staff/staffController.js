@@ -99,7 +99,8 @@ const createStaff = async (req, res) => {
         };
 
         const create = await StaffSchema.create(payload);
-        res.status(httpStatusCode.OK).send({
+        res.status(httpStatusCode.CREATED).send({
+            statusCode: httpStatusCode.CREATED,
             success: true,
             message: "Staff created successfully",
         });
