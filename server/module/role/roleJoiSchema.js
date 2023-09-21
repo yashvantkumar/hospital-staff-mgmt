@@ -9,9 +9,9 @@ const createRoleSchema = Joi.object({
         .min(3)
         .max(100)
         .required(),
-    permissions: Joi.array()
-        .min(1)
-        .items(Joi.string().valid("CREATE", "UPDATE", "READ", "DELETE"))
+    permission: Joi.string()
+        .min(3)
+        .max(20)
         .required(),
 });
 

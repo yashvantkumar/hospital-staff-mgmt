@@ -3,6 +3,7 @@ const { snakeCase, random } = require("lodash");
 const moment = require("moment");
 
 const { Role: RoleSchema } = require("../../model/role");
+const { Permission: PermissionSchema } = require("../../model/permission");
 
 const logger = require("../../config/logger")("roleController");
 
@@ -11,9 +12,22 @@ const getRole = async (req, res) => {
         logger.info({ method: "getRole" }, "entering getRole", req.query);
         const { name = "" } = req.query;
 
-        const permission = await RoleSchema.findOne({formattedName: snakeCase(name)});
+        const [role] = await RoleSchema.aggregate([
+            {
+                $match: {
+                    formattedName: snakeCase(name)
+                }
+            }, {
+                $lookup: {
+                    from: 'permissions',
+                    localField: 'permissionId',
+                    foreignField: 'id',
+                    as: 'permissions'
+                }
+            }
+        ]);
 
-        if (permission === null) {
+        if (!role) {
             return res.status(httpStatusCode.BAD_REQUEST).send({
                 success: false,
                 message: `Role ${name} does not exist`
@@ -22,9 +36,9 @@ const getRole = async (req, res) => {
 
         return res.status(httpStatusCode.OK).send({
             success: true,
-            name: permission?.name,
-            description: permission?.description,
-            permissions: permission?.permissions
+            name: role?.name,
+            description: role?.description,
+            permissions: role?.permissions.map((eachPermission) => eachPermission.name),
         });
     } catch (error) {
         logger.error({ method: "getRole" }, "something went wrong", req.params, error);
@@ -35,26 +49,51 @@ const getRole = async (req, res) => {
     }
 };
 
+const getPermission = async (payload) => {
+    try {
+        const permission = await PermissionSchema.findOne(payload);
+        return permission;
+    } catch (error) {
+        logger.error({ method: "getPermission" }, "something went wrong", payload);
+        return null;
+    }
+}
+
 const createRole = async (req, res) => {
     try {
         logger.info({ method: "createRole" }, "entering createRole", req.body);
 
-        const id = `PR-${moment().format('YYMMDDHHmmss')}${random(1000, 9999)}`;
+        const id = `RL-${moment().format('YYMMDDHHmmss')}${random(1000, 9999)}`;
 
-        const { 
+        const {
             name = "",
-            permissions = [],
+            permission = "",
+            description = ""
         } = req?.body;
 
         const formattedName = snakeCase(name);
+
+        const { id: permissionId = "" } = await getPermission({
+            formattedName: permission
+        }) || {};
+
+        if (!permissionId) {
+            logger.warn({ method: "createRole" }, `${permission} does not exist`);
+            return res.status(httpStatusCode.BAD_REQUEST).send({
+                success: false,
+                message: `${permission} permission does not exist`
+            });
+        };
 
         const payload = {
             id,
             name,
             formattedName,
-            permissions
-        }
-        // const create = await RoleSchema.create(payload);
+            permissionId,
+            description,
+            status: "ACTIVE",
+        };
+        const create = await RoleSchema.create(payload);
         res.status(httpStatusCode.OK).send({
             success: true,
             message: "Role created successfully",

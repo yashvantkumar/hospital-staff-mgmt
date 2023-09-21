@@ -13,7 +13,7 @@ const getPermission = async (req, res) => {
 
         const permission = await PermissionSchema.findOne({formattedName: snakeCase(name)});
 
-        if (permission === null) {
+        if (!permission) {
             return res.status(httpStatusCode.BAD_REQUEST).send({
                 success: false,
                 message: `Permission ${name} does not exist`
@@ -43,6 +43,7 @@ const createPermission = async (req, res) => {
         const { 
             name = "",
             permissions = [],
+            description = ""
         } = req?.body;
 
         const formattedName = snakeCase(name);
@@ -51,7 +52,8 @@ const createPermission = async (req, res) => {
             id,
             name,
             formattedName,
-            permissions
+            permissions,
+            description
         }
         const create = await PermissionSchema.create(payload);
         res.status(httpStatusCode.OK).send({
