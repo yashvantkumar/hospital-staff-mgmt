@@ -6,7 +6,14 @@ const logger = require("../../config/logger")("permissionMiddleware");
 const schema = Joi.object({
     name: Joi.string()
         .min(3)
+        .max(20)
+        .required(),
+    description: Joi.string()
+        .min(3)
         .max(100)
+        .required(),
+    permissions: Joi.array()
+        .min(1)
         .required(),
 });
 
@@ -23,7 +30,6 @@ const validateCreatePermission = async (req, res, next) => {
                 message: validationErrors
             });
         };
-        console.log("value", value)
         next();
     } catch (error) {
         logger.error({ method: "validateCreatePermission" }, "something went wrong", error);
