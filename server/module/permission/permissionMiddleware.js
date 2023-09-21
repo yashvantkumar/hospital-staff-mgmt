@@ -3,7 +3,7 @@ const httpStatusCode = require("http-status-codes");
 
 const logger = require("../../config/logger")("permissionMiddleware");
 
-const schema = Joi.object({
+const createPermissionSchema = Joi.object({
     name: Joi.string()
         .min(3)
         .max(20)
@@ -18,10 +18,17 @@ const schema = Joi.object({
         .required(),
 });
 
-const validateCreatePermission = async (req, res, next) => {
+const getPermissionSchema = Joi.object({
+    name: Joi.string()
+        .min(3)
+        .max(20)
+        .required(),
+});
+
+const validateCreatePermission = (req, res, next) => {
     try {
         const reqBody = req.body || {};
-        const value = schema.validate(reqBody);
+        const value = createPermissionSchema.validate(reqBody);
 
         if (value?.error) {
             logger.warn({ method: "validateCreatePermission" }, "validation failure", value);
@@ -41,6 +48,30 @@ const validateCreatePermission = async (req, res, next) => {
     }
 };
 
+const validateGetPermission = (req, res, next) => {
+    try {
+        const reqQuery = req.query;
+        const value = getPermissionSchema.validate(reqQuery);
+
+        if (value?.error) {
+            logger.warn({ method: "validateGetPermission" }, "validation failure", value);
+            const validationErrors = value?.error.details.map((eachError) => eachError.message)
+            return res.status(httpStatusCode.BAD_REQUEST).send({
+                success: false,
+                message: validationErrors
+            });
+        };
+        next();
+    } catch (error) {
+        logger.error({ method: "validateGetPermission" }, "something went wrong", error);
+        return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({
+            success: false,
+            message: "Something went wrong, please reach out abc@abc.com"
+        });
+    }
+};
+
 module.exports = {
     validateCreatePermission,
+    validateGetPermission,
 };

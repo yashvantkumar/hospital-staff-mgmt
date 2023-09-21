@@ -8,8 +8,23 @@ const logger = require("../../config/logger")("permissionController");
 
 const getPermission = async (req, res) => {
     try {
-        logger.info({ method: "getPermission" }, "entering getPermission", req.params);
-        console.log("req", req.body)
+        logger.info({ method: "getPermission" }, "entering getPermission", req.query);
+        const { name = "" } = req.query;
+
+        const permission = await PermissionSchema.findOne({formattedName: snakeCase(name)});
+
+        if (permission === null) {
+            return res.status(httpStatusCode.OK).send({
+                success: false,
+                message: `Permission ${name} does not exist`
+            });
+        }
+        return res.status(httpStatusCode.OK).send({
+            success: true,
+            name: permission?.name,
+            description: permission?.description,
+            permissions: permission?.permissions
+        });
     } catch (error) {
         logger.error({ method: "getPermission" }, "something went wrong", req.params, error);
         return res.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({
