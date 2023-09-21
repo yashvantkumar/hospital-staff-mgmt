@@ -14,7 +14,7 @@ const getPermission = async (req, res) => {
         const permission = await PermissionSchema.findOne({formattedName: snakeCase(name)});
 
         if (permission === null) {
-            return res.status(httpStatusCode.OK).send({
+            return res.status(httpStatusCode.BAD_REQUEST).send({
                 success: false,
                 message: `Permission ${name} does not exist`
             });
