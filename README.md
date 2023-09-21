@@ -11,7 +11,7 @@ I created an online staff management system that will allow users can add, edit,
 ## Functionalities:
 
 **1. Add staff information:** <br />
-URI: /api/v1/staff/
+URI: /api/v1/staff/ <br />
 Method: PUT <br />
 &nbsp; &nbsp; * name <br />
 &nbsp; &nbsp; * role <br />
@@ -21,20 +21,20 @@ Method: PUT <br />
 &nbsp; &nbsp; * department <br />
 
 **2. Get staff information:** <br />
-URI: /api/v1/staff/
+URI: /api/v1/staff/ <br />
 Method: GET <br />
 &nbsp; &nbsp; * emailId <br />
 
 **3. Update staff information:** <br />
-URI: /api/v1/staff/
+URI: /api/v1/staff/ <br />
 Method: POST <br />
 &nbsp; &nbsp; * emailId <br />
 &nbsp; &nbsp; * name <br />
 &nbsp; &nbsp; * age <br />
 &nbsp; &nbsp; * role <br />
 
-**3. Delete staff information:** <br />
-URI: /api/v1/staff/
+**4. Delete staff information:** <br />
+URI: /api/v1/staff/ <br />
 Method: DELETE <br />
 &nbsp; &nbsp; * staffId <br />
 
