@@ -13,6 +13,7 @@ I created an online staff management system that will allow users can add, edit,
 **1. Add employee information:** <br />
 URI: /api/v1/staff/
 Method: PUT
+
 &nbsp; &nbsp; * name <br />
 &nbsp; &nbsp; * role <br />
 &nbsp; &nbsp; * age <br />
