@@ -36,7 +36,7 @@ Method: POST <br />
 **4. Delete staff information:** <br />
 URI: /api/v1/staff/ <br />
 Method: DELETE <br />
-&nbsp; &nbsp; * staffId <br />
+&nbsp; &nbsp; * emailId <br />
 
 
 
