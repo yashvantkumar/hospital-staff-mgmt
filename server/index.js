@@ -3,10 +3,10 @@ const http = require("http");
 
 dotEnv.config();
 
-const serverInit = require("./config/expressConfig");
+const serverInit = require("./config/express");
 
 // MongoDB connection config
-require("./config/mongoDbConnConfig");
+require("./config/mongoDbConn");
 
 const init = () => {
     try {
