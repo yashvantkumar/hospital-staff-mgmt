@@ -1,6 +1,8 @@
 const httpStatusCode = require("http-status-codes");
+const { snakeCase, random } = require("lodash");
+const moment = require("moment");
 
-const PermissionSchema = require("../../model/permission");
+const { Permission: PermissionSchema } = require("../../model/permission");
 
 const logger = require("../../config/logger")("permissionController");
 
@@ -20,8 +22,26 @@ const getPermission = async (req, res) => {
 const createPermission = async (req, res) => {
     try {
         logger.info({ method: "createPermission" }, "entering createPermission", req.body);
+
+        const id = `PR-${moment().format('YYMMDDHHmmss')}${random(1000, 9999)}`;
+
+        const { 
+            name = "",
+            permissions = [],
+        } = req?.body;
+
+        const formattedName = snakeCase(name);
+
+        const payload = {
+            id,
+            name,
+            formattedName,
+            permissions
+        }
+        const create = await PermissionSchema.create(payload);
         res.status(httpStatusCode.OK).send({
-            success: true
+            success: true,
+            message: "Permission created successfully",
         });
     } catch (error) {
         logger.error({ method: "createPermission" }, "something went wrong", req.body, error);

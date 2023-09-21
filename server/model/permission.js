@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const PermissionSchema = new Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    formattedName: { type: String, required: true },
+    formattedName: { type: String, required: true, unique: true },
     permissions: [{
         type: String,
         enum: ["CREATE", "READ", "UPDATE", "DELETE"]
