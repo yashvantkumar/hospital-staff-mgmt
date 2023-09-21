@@ -1,5 +1,5 @@
 const express = require("express");
-const httpStatusCode = require("http-status-codes") 
+const httpStatusCode = require("http-status-codes");
 
 const apiRouter = express.Router();
 
